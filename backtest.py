@@ -57,3 +57,4 @@ ticker2018 = []
 result_backtest_ibov(ticker2016, '2016-01-01', '2017-01-01')
 result_backtest_ibov(ticker2017, '2017-01-01', '2018-01-01')
 df = ftos.get_tickers()
+
