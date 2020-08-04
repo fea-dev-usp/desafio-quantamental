@@ -10,14 +10,17 @@ import pandas as pd
 import pyfolio as pf
 import warnings
 import fundamentos as ftos
-from alpha_vantage.timeseries import TimeSeries
 
-ALPHAVANTAGE_API_KEY = 'LR7S2ABGWS1U7HLY'
-ts = TimeSeries(key=ALPHAVANTAGE_API_KEY)
-dados = ts.get_daily(symbol = '^BVSP')
 
 warnings.filterwarnings('ignore')
 yf.pdr_override()
+
+ticker2016 = ['TIET11.SA','BTOW3.SA','BBAS3.SA', 'BBDC3.SA', 'BRKM3.SA', 'BRFS3.SA', 'CCRO3.SA', 'CMIG3.SA',
+          'CESP3.SA', 'CIEL3.SA', 'CPLE3.SA', 'CPFE3.SA', 'DTEX3.SA', 'ECOR3.SA', 'ENBR3.SA', 'ELET3.SA',
+          'EMBR3.SA', 'EVEN3.SA', 'SUZB3.SA', 'FLRY3.SA', 'ITSA4.SA', 'ITUB3.SA', 'KLBN11.SA',
+          'LAME4.SA', 'LIGT3.SA', 'OIBR4.SA', 'LREN3.SA', 'SANB11.SA', 'SULA11.SA', 'VIVT4.SA',
+          'TIMP3.SA', 'EGIE3.SA', 'WEGE3.SA', 'SUZB3']
+dados_yahoo = web.get_data_yahoo(ticker2016, start='2016-01-01', end='2017-01-01')['Adj Close']
 
 def result_backtest_ibov(stock, datainicial, datafinal):
     ibov = ['^BVSP']

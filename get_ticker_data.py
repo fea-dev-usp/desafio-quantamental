@@ -10,6 +10,11 @@ from oauth2client.service_account import ServiceAccountCredentials
 import time
 import pandas as pd
 import pyfolio as pf
+import yfinance as yf
+import pandas_datareader.data as web
+import warnings
+
+
 
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
@@ -29,27 +34,39 @@ def get_ticker_df(lista_ticker):
 
     dic_price = {}
 
-    def get_ticker_prices(ticker):
+    def get_ticker_prices(ticker, price = True):
 
-    sheet.update_cell(1, 2, '{}'.format(ticker))
-    time.sleep(4)
-    price_close = sheet.col_values(5)[2:]
-    return price_close
-
+        sheet.update_cell(1, 2, '{}'.format(ticker))
+        time.sleep(4)
+        price_close = sheet.col_values(5)[2:]
+        date_close = sheet.col_values(4)[2:]
+        if price == True:
+            return price_close
+        else:
+            return date_close
+    maxdate = [0]
     for i in lista_ticker:
 
-        prices = get_ticker_price(i)
+        prices = get_ticker_prices(i)
         dic_price['{}'.format(i)] = prices
+
+        date = get_ticker_prices(i, price=False)
+
+        if len(date) > len(maxdate):
+            maxdate = date
 
     df = pd.DataFrame.from_dict(dic_price, orient = 'index')
     df = df.transpose().astype(float)
+    df.index = maxdate
     return df
 
 
 
-'''
 #Cálculo de retorno por uma ação
-retorno = df['WEGE3'].pct_change()
+dados_google = get_ticker_df(ticker2016)
+
+
+retorno = dados_google.pct_change()
 
 retorno_acumulado = (1 + retorno).cumprod()
 retorno_acumulado.iloc[0] = 1
@@ -57,5 +74,23 @@ retorno_acumulado.iloc[0] = 1
 carteira = 10000*retorno_acumulado
 carteira['saldo'] = carteira.sum(axis=1)
 carteira['retorno'] = carteira['saldo'].pct_change()
-'''
+retorno_port = pd.Series(carteira['retorno'])
+
+
+ibov = ['IBOV']
+dados_ibov = get_ticker_df(ibov)
+
+bench = dados_ibov.pct_change()
+
+bench_acumulado = (1+bench).cumprod()
+bench_acumulado.iloc[0] = 1
+
+carteira_ibov = 10000*bench_acumulado
+carteira_ibov['retorno'] = carteira_ibov.pct_change()
+
+
+pf.create_full_tear_sheet(retorno_port, benchmark_rets=carteira_ibov['retorno'])
+
+
+
 
