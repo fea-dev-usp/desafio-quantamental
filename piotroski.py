@@ -12,7 +12,7 @@ import pandas as pd
 ticker = 'PETR4'
 current_year = '2009'
 last_year = '2008'
-
+df = ftos.get_fundamentos(ticker)
 def f_score_piotroski(ticker, last_year, current_year):
     score = 0
     df = ftos.get_fundamentos(ticker)

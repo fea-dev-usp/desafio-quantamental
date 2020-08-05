@@ -37,7 +37,7 @@ def get_ticker_df(lista_ticker):
     def get_ticker_prices(ticker, price = True):
 
         sheet.update_cell(1, 2, '{}'.format(ticker))
-        time.sleep(4)
+        time.sleep(5)
         price_close = sheet.col_values(5)[2:]
         date_close = sheet.col_values(4)[2:]
         if price == True:
@@ -63,7 +63,7 @@ def get_ticker_df(lista_ticker):
 
 
 #Cálculo de retorno por uma ação
-dados_google = get_ticker_df(ticker2016)
+'''dados_google = get_ticker_df(ticker2016)
 
 
 retorno = dados_google.pct_change()
@@ -90,7 +90,7 @@ carteira_ibov['retorno'] = carteira_ibov.pct_change()
 
 
 pf.create_full_tear_sheet(retorno_port, benchmark_rets=carteira_ibov['retorno'])
-
+'''
 
 
 
