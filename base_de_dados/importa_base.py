@@ -2,7 +2,7 @@ import pandas as pd
 import datetime
 
 class importa_base():
-    def __init__(self, tickers, index, dt_ini, dt_fim, indicad_path='..\\iq_capital\\fundamentos_limpo\\indicadores.h5', price_path='..\\iq_capital\\precos_limpo\\precos.h5', index_path='..\\iq_capital\\index_limpo\\index.h5'):
+    def __init__(self, tickers, index, dt_ini, dt_fim, indicad_path='..\\base_de_dados\\fundamentos_limpo\\indicadores.h5', price_path='..\\base_de_dados\\precos_limpo\\precos.h5', index_path='..\\base_de_dados\\index_limpo\\index.h5'):
         self.dt_ini = dt_ini
         self.dt_fim = dt_fim
         self.tickers = list(tickers)

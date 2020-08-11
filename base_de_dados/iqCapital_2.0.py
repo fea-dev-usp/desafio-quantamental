@@ -16,7 +16,7 @@ from os.path import isfile, join
 # # options.add_argument('disable-infobars')
 # # options.add_argument("--disable-extensions")
 
-# driver = webdriver.Chrome("C:\\Nícolas\\FEA.dev\\iq_capital\\chromedriver.exe", options=options)
+# driver = webdriver.Chrome("C:\\Nícolas\\FEA.dev\\base_de_dados\\chromedriver.exe", options=options)
 # initial_url = "https://www.capitaliq.com/ciqdotnet/login-sso.aspx?bmctx=202C7940E5B3C784A1D977EF9E24AB0D&contextType=external&username=string&enablePersistentLogin=true&OverrideRetryLimit=0&contextValue=%2Foam&password=secure_string&challenge_url=https%3A%2F%2Fwww.capitaliq.com%2Fciqdotnet%2Flogin-sso.aspx&request_id=5780355017588001025&authn_try_count=0&locale=pt_BR&resource_url=https%253A%252F%252Fwww.capitaliq.com%252Fciqdotnet%252Flogin.aspx"
 # driver.get(initial_url)
 # print(driver.title)
@@ -277,7 +277,7 @@ class iq_capital_fundamentos():
 
             return list(dif_names)
 
-    def get_fund(self, tickers, demonstrativos, path_base_limpa='..\\iq_capital\\fundamentos_limpo'):
+    def get_fund(self, tickers, demonstrativos, path_base_limpa='..\\base_de_dados\\fundamentos_limpo'):
         # EXCLUI BASES SUJAS
         self.exclui_download()
 
@@ -329,7 +329,7 @@ class iq_capital_fundamentos():
         self.exclui_download()
 
         # VERIFICA SE AS EMPRESAS JA ESTPA NA BASE
-        dif_tickers = self.index_already_exixt(tickers, 'Prices', '..\\iq_capital\\precos_limpo')
+        dif_tickers = self.index_already_exixt(tickers, 'Prices', '\\precos_limpo')
 
         # LOGIN
         self.login()
@@ -382,7 +382,7 @@ class iq_capital_fundamentos():
         self.exclui_download()
 
         # VERIFICA SE AS EMPRESAS JA ESTPA NA BASE
-        dif_index = self.index_already_exixt(index, 'Index', '..\\iq_capital\\index_limpo')
+        dif_index = self.index_already_exixt(index, 'Index', '\\index_limpo')
 
         # LOGIN
         self.login()
@@ -442,7 +442,7 @@ def fundamentos():
 
     # DOWNLOAD FUNDAMENTOS
     # INICIA O WEBDRIVER
-    download_path_fundamentos = "C:\\Nícolas\\FEA.dev\\desafio-quantamental\\iq_capital\\fundamentos_sujos"
+    download_path_fundamentos = "/desafio-quantamental/base_de_dados\\fundamentos_sujos"
     f_options = webdriver.ChromeOptions()
     # options.gpu = False
     # options.headless = True
@@ -453,7 +453,7 @@ def fundamentos():
 
     desired = f_options.to_capabilities()
     desired['loggingPrefs'] = {'performance': 'ALL'}
-    driver = webdriver.Chrome("..\\iq_capital\\chromedriver.exe", desired_capabilities=desired)
+    driver = webdriver.Chrome("\\chromedriver.exe", desired_capabilities=desired)
 
     iq_f = iq_capital_fundamentos(username, password, driver, download_path_fundamentos)
     # DEMONSTRATIVOS
@@ -467,7 +467,7 @@ def shares():
     tickers = ['OIBR4', 'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3']
 
     # INICIA O WEBDRIVER
-    download_path_precos = "C:\\Nícolas\\FEA.dev\\desafio-quantamental\\iq_capital\\precos_sujos"
+    download_path_precos = "/desafio-quantamental/base_de_dados\\precos_sujos"
     f_options = webdriver.ChromeOptions()
     # options.gpu = False
     # options.headless = True
@@ -478,7 +478,7 @@ def shares():
 
     desired = f_options.to_capabilities()
     desired['loggingPrefs'] = {'performance': 'ALL'}
-    driver_p = webdriver.Chrome("..\\iq_capital\\chromedriver.exe", desired_capabilities=desired)
+    driver_p = webdriver.Chrome("\\chromedriver.exe", desired_capabilities=desired)
     iq_p = iq_capital_fundamentos(username, password, driver_p, download_path_precos)
     # PRECOS ACOES
     iq_p.shares_price(tickers)
@@ -491,7 +491,7 @@ def index():
     index = ['IBOV']
 
     # INICIA O WEBDRIVER
-    download_path_precos = "C:\\Nícolas\\FEA.dev\\desafio-quantamental\\iq_capital\\index_sujos"
+    download_path_precos = "/desafio-quantamental/base_de_dados\\index_sujos"
     f_options = webdriver.ChromeOptions()
     # options.gpu = False
     # options.headless = True
@@ -502,7 +502,7 @@ def index():
 
     desired = f_options.to_capabilities()
     desired['loggingPrefs'] = {'performance': 'ALL'}
-    driver_p = webdriver.Chrome("..\\iq_capital\\chromedriver.exe", desired_capabilities=desired)
+    driver_p = webdriver.Chrome("\\chromedriver.exe", desired_capabilities=desired)
     iq_i = iq_capital_fundamentos(username, password, driver_p, download_path_precos)
     # VALOR INDEX
     iq_i.index_value(index)

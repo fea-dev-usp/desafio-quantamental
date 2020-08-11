@@ -49,7 +49,7 @@ class exporta_base():
         # CHECK IN DEMOSNTRATIVOS (FUNDAMENTOS)
         if 'BP' == base:
             # LE AS BASES DE DADOS
-            dre = pd.HDFStore('..\\iq_capital\\fundamentos_limpo\\dre.h5')
+            dre = pd.HDFStore('\\fundamentos_limpo\\dre.h5')
             # SET COM AS EMPRESAS QUE N ESTAO NA BASE
             dif_names = {ticker} if ticker not in dre else set()
             #CLOSE
@@ -60,7 +60,7 @@ class exporta_base():
         # CHECK IN DFC
         elif 'DFC' == base:
             # LE A BASE DE DADOS
-            dfc = pd.HDFStore('..\\iq_capital\\fundamentos_limpo\\dfc.h5')
+            dfc = pd.HDFStore('\\fundamentos_limpo\\dfc.h5')
             # SET COM AS EMPRESAS QUE N ESTAO NA BASE
             dif_names = {ticker} if ticker not in dfc else set()
             # CLOSE
@@ -71,7 +71,7 @@ class exporta_base():
         # CHECK IN DRE
         elif 'DRE' == base:
             # LE A BASE DE DADOS
-            bp = pd.HDFStore('..\\iq_capital\\fundamentos_limpo\\bp.h5')
+            bp = pd.HDFStore('\\fundamentos_limpo\\bp.h5')
             # SET COM AS EMPRESAS QUE N ESTAO NA BASE
             dif_names = {ticker} if ticker not in bp else set()
             # CLOSE
@@ -82,7 +82,7 @@ class exporta_base():
         # CHECK IN PRECOS
         elif 'Prices' == base:
             # LE AS BASES DE DADOS
-            prices = pd.HDFStore('..\\iq_capital\\precos_limpo\\precos.h5')
+            prices = pd.HDFStore('\\precos_limpo\\precos.h5')
             # SET COM AS EMPRESAS QUE N ESTAO NA BASE
             dif_names = {ticker} if ticker not in prices else set()
             # CLOSE
@@ -93,7 +93,7 @@ class exporta_base():
             # CHECK IN PRECOS
         elif 'Index' == base:
             # LE AS BASES DE DADOS
-            index = pd.HDFStore('..\\iq_capital\\index_limpo\\index.h5')
+            index = pd.HDFStore('\\index_limpo\\index.h5')
             # SET COM AS EMPRESAS QUE N ESTAO NA BASE
             dif_names = {ticker} if ticker not in index else set()
             # CLOSE
@@ -207,22 +207,22 @@ class exporta_base():
 
         # CREATE A HDF5 FILE - BP
         for empresa in self.dict_bp.keys():
-            self.dict_bp[empresa].to_hdf('..\\iq_capital\\fundamentos_limpo\\bp.h5', key=empresa, mode='a')
+            self.dict_bp[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\bp.h5', key=empresa, mode='a')
 
         # CREATE A HDF5 FILE - DFC
         for empresa in self.dict_dfc.keys():
-            self.dict_dfc[empresa].to_hdf('..\\iq_capital\\fundamentos_limpo\\dfc.h5', key=empresa, mode='a')
+            self.dict_dfc[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\dfc.h5', key=empresa, mode='a')
 
         # CREATE A HDF5 FILE - DRE
         for empresa in self.dict_dre.keys():
-            self.dict_dre[empresa].to_hdf('..\\iq_capital\\fundamentos_limpo\\dre.h5', key=empresa, mode='a')
+            self.dict_dre[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\dre.h5', key=empresa, mode='a')
 
     def indicadores(self):
         cols = ['roa', 'fco', 'lc', 'alavancagem', 'shares', 'ga']
         # DICT C DFS
         dict_dfs = {}
         # HDF FILE
-        ind = pd.HDFStore('..\\iq_capital\\fundamentos_limpo\\indicadores.h5')
+        ind = pd.HDFStore('\\fundamentos_limpo\\indicadores.h5')
         # LISTA COM AS EMPRESAS QUE N ESTAO NA BASE
         dif_names = [x for x in self.nomes if x not in ind]
 
@@ -303,7 +303,7 @@ class exporta_base():
 
         # CREATE A HDF5 FILE
         for empresa in dict_dfs.keys():
-            dict_dfs[empresa].to_hdf('..\\iq_capital\\fundamentos_limpo\\indicadores.h5', key=empresa, mode='a')
+            dict_dfs[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\indicadores.h5', key=empresa, mode='a')
 
         # CLOSE
         ind.close()
@@ -357,7 +357,7 @@ class exporta_base():
 
         # CREATE A HDF5 FILE
         for empresa in self.dict_prices.keys():
-            self.dict_prices[empresa].to_hdf('..\\iq_capital\\precos_limpo\\precos.h5', key=empresa, mode='a')
+            self.dict_prices[empresa].to_hdf('..\\base_de_dados\\precos_limpo\\precos.h5', key=empresa, mode='a')
 
     def dfs_index(self):
         # NOME DOS ARQUIVOS EXCEL
@@ -408,21 +408,21 @@ class exporta_base():
 
         # CREATE A HDF5 FILE
         for empresa in self.dict_index.keys():
-            self.dict_index[empresa].to_hdf('..\\iq_capital\\index_limpo\\index.h5', key=empresa, mode='a')
+            self.dict_index[empresa].to_hdf('..\\base_de_dados\\index_limpo\\index.h5', key=empresa, mode='a')
 
 
 def main():
-    base_path = "..\\iq_capital\\fundamentos_sujos"
-    price_path_folder = "..\\iq_capital\\precos_sujos"
-    index_path_folder = "..\\iq_capital\\index_sujos"
+    base_path = "\\fundamentos_sujos"
+    price_path_folder = "\\precos_sujos"
+    index_path_folder = "\\index_sujos"
     exp_b = exporta_base(base_path, price_path_folder=price_path_folder, index_path_folder=index_path_folder)
 
     # LIMPA E EXPORTA INDICADORES EMPRESAS
     # exp_b.limpa_base_f()
 
-    # exp_b.dict_bp = pd.read_excel('../iq_capital/fundamentos_limpo/bp.h5', index_col=0, sheet_name=None)
-    # exp_b.dict_dfc = pd.read_excel('../iq_capital/fundamentos_limpo/dfc.h5', index_col=0, sheet_name=None)
-    # exp_b.dict_dre = pd.read_excel('../iq_capital/fundamentos_limpo/dre.h5', index_col=0, sheet_name=None)
+    # exp_b.dict_bp = pd.read_excel('../base_de_dados/fundamentos_limpo/bp.h5', index_col=0, sheet_name=None)
+    # exp_b.dict_dfc = pd.read_excel('../base_de_dados/fundamentos_limpo/dfc.h5', index_col=0, sheet_name=None)
+    # exp_b.dict_dre = pd.read_excel('../base_de_dados/fundamentos_limpo/dre.h5', index_col=0, sheet_name=None)
     # exp_b.nomes = list(exp_b.dict_bp.keys())
 
     # exp_b.indicadores()
@@ -437,34 +437,34 @@ def main():
 
 def excel_to_hdf():
     # # DICT PRECO
-    # dict_prices = pd.read_excel('..\\iq_capital\\precos_limpo\\precos.xlsx', sheet_name=None, index_col=0)
+    # dict_prices = pd.read_excel('..\\base_de_dados\\precos_limpo\\precos.xlsx', sheet_name=None, index_col=0)
     # # CREATE A HDF5 FILE - PRECO
     # for empresa in dict_prices.keys():
-    #     dict_prices[empresa].to_hdf('..\\iq_capital\\precos_limpo\\precos.h5', key=empresa, mode='a')
+    #     dict_prices[empresa].to_hdf('..\\base_de_dados\\precos_limpo\\precos.h5', key=empresa, mode='a')
 
     # DICT INDICADORES
-    dict_ind = pd.read_excel('..\\iq_capital\\fundamentos_limpo\\indicadores.xlsx', sheet_name=None, index_col=0)
+    dict_ind = pd.read_excel('..\\base_de_dados\\fundamentos_limpo\\indicadores.xlsx', sheet_name=None, index_col=0)
     # CREATE A HDF5 FILE - INDICADORES
     for empresa in dict_ind.keys():
-        dict_ind[empresa].to_hdf('..\\iq_capital\\fundamentos_limpo\\indicadores.h5', key=empresa, mode='a')
+        dict_ind[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\indicadores.h5', key=empresa, mode='a')
 
     # DICT DFC
-    dict_ind = pd.read_excel('..\\iq_capital\\fundamentos_limpo\\dfc.xlsx', sheet_name=None, index_col=0)
+    dict_ind = pd.read_excel('..\\base_de_dados\\fundamentos_limpo\\dfc.xlsx', sheet_name=None, index_col=0)
     # CREATE A HDF5 FILE - DFC
     for empresa in dict_ind.keys():
-        dict_ind[empresa].to_hdf('..\\iq_capital\\fundamentos_limpo\\dfc.h5', key=empresa, mode='a')
+        dict_ind[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\dfc.h5', key=empresa, mode='a')
 
     # DICT DRE
-    dict_ind = pd.read_excel('..\\iq_capital\\fundamentos_limpo\\dre.xlsx', sheet_name=None, index_col=0)
+    dict_ind = pd.read_excel('..\\base_de_dados\\fundamentos_limpo\\dre.xlsx', sheet_name=None, index_col=0)
     # CREATE A HDF5 FILE - DRE
     for empresa in dict_ind.keys():
-        dict_ind[empresa].to_hdf('..\\iq_capital\\fundamentos_limpo\\dre.h5', key=empresa, mode='a')
+        dict_ind[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\dre.h5', key=empresa, mode='a')
 
     # DICT BP
-    dict_ind = pd.read_excel('..\\iq_capital\\fundamentos_limpo\\bp.xlsx', sheet_name=None, index_col=0)
+    dict_ind = pd.read_excel('..\\base_de_dados\\fundamentos_limpo\\bp.xlsx', sheet_name=None, index_col=0)
     # CREATE A HDF5 FILE - BP
     for empresa in dict_ind.keys():
-        dict_ind[empresa].to_hdf('..\\iq_capital\\fundamentos_limpo\\bp.h5', key=empresa, mode='a')
+        dict_ind[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\bp.h5', key=empresa, mode='a')
 
 
 if __name__ == '__main__':
