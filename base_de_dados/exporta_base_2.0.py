@@ -217,19 +217,24 @@ class exporta_base():
         for empresa in self.dict_dre.keys():
             self.dict_dre[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\dre.h5', key=empresa, mode='a')
 
-    def indicadores(self):
-        cols = ['roa', 'fco', 'lc', 'alavancagem', 'shares', 'ga']
+    def indicadores(self, atuliza_base=False):
+        cols = ['roa', 'fco', 'lc', 'alavancagem', 'shares', 'ga', 'margem_bruta']
         # DICT C DFS
         dict_dfs = {}
-        # HDF FILE
-        ind = pd.HDFStore('\\fundamentos_limpo\\indicadores.h5')
-        # LISTA COM AS EMPRESAS QUE N ESTAO NA BASE
-        dif_names = [x for x in self.nomes if x not in ind]
+        # EMPREAS
+        dif_names = self.nomes
+
+        # CRIA APENAS OS INDICADORES DAS EMPRESAS Q N ESTAO NA BASE
+        if atuliza_base is False:
+            # HDF FILE
+            ind = pd.HDFStore('..\\base_de_dados\\fundamentos_limpo\\indicadores.h5')
+            # LISTA COM AS EMPRESAS QUE N ESTAO NA BASE
+            dif_names = [x for x in self.nomes if x not in ind]
 
         for nome in dif_names:
             print(nome)
-            # if nome == 'CSAN':
-            #     print('paraa')
+            if nome == 'ABEV':
+                print('paraa')
             # ROA = ATIVO TOTAL MEDIO/ LUCRO LIQUIDO
             ## ATIVO MEDIO
             ativo_total = self.dict_bp[nome].loc['Total Assets'].to_numpy().reshape(1, self.dict_bp[nome].loc['Total Assets'].count())
@@ -237,7 +242,7 @@ class exporta_base():
             ativo_total_1[ativo_total_1 == 0] = 0.000000000000000000000000000000000000000001
             ativo_total_0 = ativo_total[0][:-1].reshape(1, len(ativo_total[0])-1)
             ativo_total_0[ativo_total_1 == 0] = 0.000000000000000000000000000000000000000001
-            at_medio = np.divide(ativo_total_1, ativo_total_1 + ativo_total_0)
+            at_medio = np.divide(ativo_total_1 + ativo_total_0, 2)
 
             ## LUCRO LIQUIDO
             l_liquido = self.dict_dre[nome].loc['Net Income'].to_numpy()[1:].reshape(1, self.dict_dre[nome].loc['Net Income'].count()-1)
@@ -260,14 +265,7 @@ class exporta_base():
 
             lc = np.divide(ac, pc)
 
-            # ALAVANCAGEM: PC/PC + PNC
-            # po_curto = self.dict_bp[nome].loc['Curr. Port. of LT Debt'].to_numpy().reshape(1, self.dict_bp[nome].loc['Curr. Port. of LT Debt'].count())
-            # po_longo = self.dict_bp[nome].loc['Long-Term Debt'].to_numpy().reshape(1, self.dict_bp[nome].loc['Long-Term Debt'].count())
-            # passivo_o = po_curto + po_longo
-            # ativo_total[ativo_total == 0] = 0.000000000000000000000000000000000000000001
-            #
-            # alavancagem = passivo_o/ativo_total
-
+            # ENDIVIDAMENTO: PC/ (PC + PNC)
             ## PNC
             pnc = self.dict_bp[nome].loc['Total Current Liabilities'].to_numpy().reshape(1, self.dict_bp[nome].loc[
                 'Total Current Liabilities'].count())
@@ -277,13 +275,21 @@ class exporta_base():
             passivo_t = self.dict_bp[nome].loc['Total Liabilities'].to_numpy().reshape(1, self.dict_bp[nome].loc[
                 'Total Liabilities'].count())
             passivo_t[passivo_t == 0] = 0.000000000000000000000000000000000000000001
-            alavancagem = pc / passivo_t
+            endividamento = pc / passivo_t
+
+            # ALAVANCAGEM FINANCEIRA: LUCRO OPERACIONAL / (LUCRO OPERACIONAL - DESPESAS FINANCEIRAS)
+            ## LUCRO OPERACIONAL: (RECEITA DE VENDAS - CUSTOS) / (DESPESAS OPERACIONAIS  + REC. FIN.)
 
             # QTDE ACOES
             shares = self.dict_bp[nome].loc['Total Shares Out. on Balance Sheet Date'].to_numpy().reshape(1, self.dict_bp[nome].loc['Total Shares Out. on Balance Sheet Date'].count())
 
-            # MARGEM BRUTA
-
+            # MARGEM BRUTA: LUCRO BRUTO / RECEITA BRUTA
+            ## RECEITA BRUTA
+            receita = self.dict_dre[nome].loc['Total Revenue'].to_numpy().reshape(1, self.dict_dre[nome].loc['Total Revenue'].count())
+            receita[receita == 0] = 0.000000000000000000000000000000000000000001
+            ## LUCRO BRUTO
+            lucro_bruto = self.dict_dre[nome].loc['Net Income'].to_numpy().reshape(1, self.dict_dre[nome].loc['Net Income'].count())
+            margem_bruta = lucro_bruto / receita
 
             # GA = RECITA DE VENDAS LIQUIDA/ATIVO TOTAL MEDIO
             ## VENDAS LIQUIDAS
@@ -297,16 +303,13 @@ class exporta_base():
             ## INDEX
             str_arrumadas = [x[:-2] if '.' in x else x for x in self.dict_bp[nome].columns]
             index = [datetime.datetime.strptime(x, '%d/%m/%Y').date() for x in str_arrumadas]
-            df = pd.DataFrame(np.concatenate((roa.T, fco.T, lc.T, alavancagem.T, shares.T, ga.T), axis=1), columns=cols, index=index)
+            df = pd.DataFrame(np.concatenate((roa.T, fco.T, lc.T, endividamento.T, shares.T, ga.T, margem_bruta.T), axis=1), columns=cols, index=index)
             # ADD DICT
             dict_dfs[nome] = df
 
         # CREATE A HDF5 FILE
         for empresa in dict_dfs.keys():
             dict_dfs[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\indicadores.h5', key=empresa, mode='a')
-
-        # CLOSE
-        ind.close()
 
     def dfs_prices(self):
         # NOME DOS ARQUIVOS EXCEL
@@ -417,23 +420,32 @@ def main():
     index_path_folder = "\\index_sujos"
     exp_b = exporta_base(base_path, price_path_folder=price_path_folder, index_path_folder=index_path_folder)
 
+    tickers = [
+        'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3', 'BBDC3', 'BBDC4', 'BBSE3', 'BEEF3', 'BPAC11', 'BRAP4', 'BRDT3', 'BRFS3',
+        'BRKM5', 'BRML3', 'BTOW3', 'CCRO3', 'CIEL3', 'CMIG4', 'COGN3', 'CPFE3', 'CRFB3', 'CSAN3', 'CSNA3', 'CVCB3',
+        'CYRE3', 'ECOR3', 'EGIE3', 'ELET3', 'ELET6', 'EMBR3', 'ENBR3', 'ENGI11', 'EQTL3', 'FLRY3', 'GGBR4', 'GNDI3',
+        'GOAU4', 'GOLL4', 'HAPV3', 'HGTX3', 'HYPE3', 'IGTA3', 'IRBR3', 'ITSA4', 'ITUB4', 'JBSS3', 'KLBN11', 'LAME4',
+        'LREN3', 'MGLU3', 'MRFG3', 'MRVE3', 'MULT3', 'NTCO3', 'PCAR3', 'PETR3', 'PETR4', 'QUAL3', 'RADL3', 'RAIL3',
+        'RENT3', 'SANB11', 'SBSP3', 'SULA11', 'SUZB3', 'TAEE11', 'OIBR4', 'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3'
+    ]
+
     # LIMPA E EXPORTA INDICADORES EMPRESAS
     # exp_b.limpa_base_f()
-
-    # exp_b.dict_bp = pd.read_excel('../base_de_dados/fundamentos_limpo/bp.h5', index_col=0, sheet_name=None)
-    # exp_b.dict_dfc = pd.read_excel('../base_de_dados/fundamentos_limpo/dfc.h5', index_col=0, sheet_name=None)
-    # exp_b.dict_dre = pd.read_excel('../base_de_dados/fundamentos_limpo/dre.h5', index_col=0, sheet_name=None)
+    exp_b.nomes = [x[:4] for x in tickers]
+    exp_b.dict_bp = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/bp.h5')
+    exp_b.dict_dfc = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/dfc.h5')
+    exp_b.dict_dre = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/dre.h5')
     # exp_b.nomes = list(exp_b.dict_bp.keys())
 
-    # exp_b.indicadores()
+    exp_b.indicadores(True)
 
     # # LIMPA E EXPORTA PRECOS ACOES
     # exp_b.dfs_prices()
     # exp_b.limpa_base_p()
 
     # LIMPA E EXPORTA VALOR INDEX
-    exp_b.dfs_index()
-    exp_b.limpa_base_index()
+    # exp_b.dfs_index()
+    # exp_b.limpa_base_index()
 
 def excel_to_hdf():
     # # DICT PRECO
@@ -466,6 +478,13 @@ def excel_to_hdf():
     for empresa in dict_ind.keys():
         dict_ind[empresa].to_hdf('..\\base_de_dados\\fundamentos_limpo\\bp.h5', key=empresa, mode='a')
 
+
+def dict_x(tickers, path):
+    dict_x = {}
+    for t in tickers:
+        dict_x[t] = pd.read_hdf(path, t)
+
+    return dict_x
 
 if __name__ == '__main__':
     main()

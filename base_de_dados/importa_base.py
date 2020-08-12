@@ -104,8 +104,8 @@ class importa_base():
 
         # LIMPA DFS
         for name in names:
-            x = dict_ind[name].loc[dict_ind[name].index >= self.dt_ini].copy()
-            dict_limpa[name] = x.loc[x.index <= self.dt_fim].copy()
+            x = dict_ind[name].loc[dict_ind[name].index >= self.dt_ini.date()].copy()
+            dict_limpa[name] = x.loc[x.index <= self.dt_fim.date()].copy()
             # VERIFICA SE A ACAO EXISTE NESSE PERIODO
             if len(dict_limpa[name]) == 0:
                 list_priceless.append(name)
@@ -115,7 +115,7 @@ class importa_base():
         df_ind = pd.concat(dict_limpa.values(), axis=1)
 
         ## SUB INDEX
-        sub_index = ['roa', 'fco', 'lc', 'alavancagem', 'shares', 'ga']
+        sub_index = ['roa', 'fco', 'lc', 'alavancagem', 'shares', 'ga', 'margem_bruta']
         ## MULTIINDEX
         index = [(name, i) for name in names for i in sub_index]
         multiindex = pd.MultiIndex.from_tuples(index)
