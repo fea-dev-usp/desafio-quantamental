@@ -21,19 +21,19 @@ class Markowitz():
 
 ### EXEMPLO DE USO ###
 
-# from pandas_datareader import data as web
-# from datetime import datetime
-# import matplotlib.pyplot as plt
+from pandas_datareader import data as web
+from datetime import datetime
+import matplotlib.pyplot as plt
 
-# tickers = ['VVAR3.SA', 'MGLU3.SA', 'CSAN3.SA']
+tickers = ['VVAR3.SA', 'MGLU3.SA', 'CSAN3.SA']
 
-# inicio = '2018-01-01'
-# fim = '2019-12-01'
+inicio = '2018-01-01'
+fim = '2019-12-01'
 
-# df = web.DataReader(tickers, data_source = 'yahoo', start = inicio, end = fim)
+df = web.DataReader(tickers, data_source = 'yahoo', start = inicio, end = fim)
 
-# df = df['Adj Close']
+df = df['Adj Close']
 
-# markowitz = Markowitz(df)
+markowitz = Markowitz(df)
 
-# print(markowitz.max_sharpe())
+print(markowitz.max_sharpe())

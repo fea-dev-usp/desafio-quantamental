@@ -6,6 +6,7 @@ import pandas as pd
 import datetime
 from dateutil.relativedelta import relativedelta
 import pyfolio as pf
+import markowitz
 
 class EVA:
     def __init__(self, series_tickers, first_period, index=['IBOV']):
@@ -59,7 +60,13 @@ class EVA:
 
             # BACKTEST
             ## LISTA PORCENTAGEM ALOCACAO
-            pct = list(np.random.rand(len(df_precos_p.columns)))
+            ### DF PRECOS MTZ
+            imp_b.tickers = tickers_p
+            df_precos_mtz = imp_b.importa_precos()
+            mtz = markowitz(df_precos_mtz)
+            pct = mtz.max_sharpe().values()
+            # pct = list(np.random.rand(len(df_precos_p.columns)))
+
             carteira, carteira_ibov = backtest(df_precos_p, df_ibov, pct)
 
             ## ADD A SERIES ACOES
