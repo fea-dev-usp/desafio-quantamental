@@ -5,86 +5,84 @@ Created on Mon Jun 22 14:25:20 2020
 @author: JOAO VICTOR
 """
 
-import fundamentos as ftos
+# import fundamentos as ftos
 import pandas as pd
+from importa_base import importa_base
+import datetime
+import numpy as np
 
-#Parâmetros
-ticker = 'PETR4'
-current_year = '2009'
-last_year = '2008'
-df = ftos.get_fundamentos(ticker)
-def f_score_piotroski(ticker, last_year, current_year):
-    score = 0
-    df = ftos.get_fundamentos(ticker)
 
-#calculando ROA corrente
-    current_ll = df['Resultados'].loc[current_year].loc['Lucro Líquido']
-    current_at = df['Patrimônio'].loc[current_year].loc['Ativo Total']
-    current_roa = current_ll/current_at
+def f_score_piotroski(df_ticker, score_unit=1):
+    # VALOR SCORE
+    scr = score_unit
+    # DICT SCORES
+    scores = {}
 
-#ROA corrente positivo, score +1
-    if current_roa > 0:
-        score += 1
+    #LOOPING IN TICKERS
+    for ticker, new_df in df_ticker.groupby(axis=1, level=0):
+        # LEN ROW
+        tamanho = len(new_df[ticker]['roa'])
+        # SCORE
+        score = np.zeros((1, tamanho)).reshape(1,tamanho)
 
-#FCO positivo, score +1
-    if df['Fluxo de Caixa'].loc[current_year].loc['FCO'] > 0:
-        score += 1
+        # ROA corrente positivo, score +1
+        score += new_df[ticker]['roa'].apply(lambda x: scr if x > 0 else 0).to_numpy().reshape(1, tamanho)
 
-#Calculando ROA passado
-    last_ll = df['Resultados'].loc[last_year].loc['Lucro Líquido']
-    last_at = df['Patrimônio'].loc[last_year].loc['Ativo Total']
-    last_roa = last_ll/last_at
+        # FCO positivo, score +1
+        score += new_df[ticker]['fco'].apply(lambda x: scr if x > 0 else 0).to_numpy().reshape(1, tamanho)
 
-#ROA corrente maior que ROA passado, score +1
-    if current_roa > last_roa:
-        score += 1
+        # ROA corrente maior que ROA passado, score +1
+        score += new_df[ticker]['roa'].pct_change().apply(lambda x: scr if x > 0 else 0).to_numpy().reshape(1, tamanho)
 
-#FCO corrente maior que Lucro Líquido corrente, score +1
-    if df['Fluxo de Caixa'].loc[current_year].loc['FCO'] > current_ll:
-        score += 1
+        # #FCO corrente maior que Lucro Líquido corrente, score +1
+        # if df['Fluxo de Caixa'].loc[current_year].loc['FCO'] > current_ll:
+        #     score += 1
 
-#Calculando Alavangagem Passada e Corrente
-    last_divida = df['Dívida'].loc[last_year].loc['Dívida Líquida']
-    current_divida = df['Dívida'].loc[current_year].loc['Dívida Líquida']
+        #Alavancagem Passado maior que Alavancagem presente, score +1
+        score += new_df[ticker]['alavancagem'].pct_change().apply(lambda x: scr if x > 0 else 0).to_numpy().reshape(1, tamanho)
 
-    last_leverage = last_divida / last_at
-    current_leverage = current_divida / current_at
+        #Liquidez Corrente maior que Liquidez passada, score +1
+        score += new_df[ticker]['lc'].pct_change().apply(lambda x: scr if x > 0 else 0).to_numpy().reshape(1, tamanho)
 
-#Alavancagem Passado maior que Alavancagem presente, score +1
-    if last_leverage > current_leverage:
-        score += 1
+        #Quantidade de Ações permaneceu igual, score +1
+        score += new_df[ticker]['shares'].pct_change().apply(lambda x: scr if x == 0 else 0).to_numpy().reshape(1, tamanho)
 
-#calculando Liquidez Corrente e Passada
-    last_pc = df['Liquidez e Solvência'].loc[last_year].loc['Passivo Circulante']
-    current_pc = df['Liquidez e Solvência'].loc[current_year].loc['Passivo Circulante']
+        #Margem Bruta corrente maior que Margem Bruta passada, score +1
+        score += new_df[ticker]['margem_bruta'].pct_change().apply(lambda x: scr if x == 0 else 0).to_numpy().reshape(1, tamanho)
 
-    last_ac = df['Liquidez e Solvência'].loc[last_year].loc['Ativo Circulante']
-    current_ac = df['Liquidez e Solvência'].loc[current_year].loc['Ativo Circulante']
+        #Giro de Ativo Corrente maior que Giro de Ativo Passado, score +1
+        score += new_df[ticker]['ga'].pct_change().apply(lambda x: scr if x == 0 else 0).to_numpy().reshape(1, tamanho)
 
-    last_lc = last_ac / last_pc
-    current_lc = current_ac / current_pc
+        # ADD TO DICT
+        scores[ticker] = score[0]
 
-#Liquidez Corrente maior que Liquidez passada, score +1
-    if current_lc > last_lc:
-        score += 1
+    # CREATE DF SCORE
+    ## INDEX
+    index = df_ticker.index
+    ## DF
+    df_score = pd.DataFrame.from_dict(scores)
+    df_score.index = index
 
-#Quantidade de Ações permaneceu igual, score +1
-    if df['Mercado'].loc[current_year].loc['Quantidade de Ações ON'] ==  df['Mercado'].loc[last_year].loc['Quantidade de Ações ON']:
-        score += 1
+    return df_score
 
-#Margem Bruta corrente maior que Margem Bruta passada, score +1
-    if df['Resultados'].loc[current_year].loc['Margem Bruta'] > df['Resultados'].loc[last_year].loc['Margem Bruta']:
-        score += 1
+if __name__ == '__main__':
+    # TICKERS
+    shares_tickers = ['ABEV3', 'AZUL4', 'B3SA3']
+    index_tickers = ['IBOV']
 
-#Calculando Giro de Ativo Passado e Corrente
-    last_average_at = last_at / 12
-    current_average_at = current_at / 12
-    last_giro_ativo = df['Resultados'].loc[last_year].loc['Receita Líquida'] / last_average_at
-    current_giro_ativo = df['Resultados'].loc[current_year].loc['Receita Líquida'] / current_average_at
+    # PERIODO
+    ini = datetime.datetime.strptime('10-02-2016', '%d-%m-%Y')
+    fim = datetime.datetime.strptime('10-02-2017', '%d-%m-%Y')
+    # CLASS IMPORT
+    imp_b = importa_base(ini, fim, shares_tickers, index_tickers)
+    ## IMPORT PRECOS
+    df_price = imp_b.importa_precos()
+    ## IMPORT INDICES
+    df_indicadores = imp_b.importa_indicadores()
+    ## IMPORT INDEX
+    df_indexes = imp_b.importa_index()
 
-#Giro de Ativo Corrente maior que Giro de Ativo Passado, score +1
-    if current_giro_ativo > last_giro_ativo:
-        score += 1
-    return score
+    # SOCRE UNIT
+    score_unit = 1
 
-test = f_score_piotroski(ticker, last_year, current_year)
+    test = f_score_piotroski(df_indicadores, score_unit)

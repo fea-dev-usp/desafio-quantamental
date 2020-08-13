@@ -420,28 +420,28 @@ def main():
     index_path_folder = "\\index_sujos"
     exp_b = exporta_base(base_path, price_path_folder=price_path_folder, index_path_folder=index_path_folder)
 
-    tickers = [
-        'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3', 'BBDC3', 'BBDC4', 'BBSE3', 'BEEF3', 'BPAC11', 'BRAP4', 'BRDT3', 'BRFS3',
-        'BRKM5', 'BRML3', 'BTOW3', 'CCRO3', 'CIEL3', 'CMIG4', 'COGN3', 'CPFE3', 'CRFB3', 'CSAN3', 'CSNA3', 'CVCB3',
-        'CYRE3', 'ECOR3', 'EGIE3', 'ELET3', 'ELET6', 'EMBR3', 'ENBR3', 'ENGI11', 'EQTL3', 'FLRY3', 'GGBR4', 'GNDI3',
-        'GOAU4', 'GOLL4', 'HAPV3', 'HGTX3', 'HYPE3', 'IGTA3', 'IRBR3', 'ITSA4', 'ITUB4', 'JBSS3', 'KLBN11', 'LAME4',
-        'LREN3', 'MGLU3', 'MRFG3', 'MRVE3', 'MULT3', 'NTCO3', 'PCAR3', 'PETR3', 'PETR4', 'QUAL3', 'RADL3', 'RAIL3',
-        'RENT3', 'SANB11', 'SBSP3', 'SULA11', 'SUZB3', 'TAEE11', 'OIBR4', 'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3'
-    ]
+    # tickers = [
+    #     'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3', 'BBDC3', 'BBDC4', 'BBSE3', 'BEEF3', 'BPAC11', 'BRAP4', 'BRDT3', 'BRFS3',
+    #     'BRKM5', 'BRML3', 'BTOW3', 'CCRO3', 'CIEL3', 'CMIG4', 'COGN3', 'CPFE3', 'CRFB3', 'CSAN3', 'CSNA3', 'CVCB3',
+    #     'CYRE3', 'ECOR3', 'EGIE3', 'ELET3', 'ELET6', 'EMBR3', 'ENBR3', 'ENGI11', 'EQTL3', 'FLRY3', 'GGBR4', 'GNDI3',
+    #     'GOAU4', 'GOLL4', 'HAPV3', 'HGTX3', 'HYPE3', 'IGTA3', 'IRBR3', 'ITSA4', 'ITUB4', 'JBSS3', 'KLBN11', 'LAME4',
+    #     'LREN3', 'MGLU3', 'MRFG3', 'MRVE3', 'MULT3', 'NTCO3', 'PCAR3', 'PETR3', 'PETR4', 'QUAL3', 'RADL3', 'RAIL3',
+    #     'RENT3', 'SANB11', 'SBSP3', 'SULA11', 'SUZB3', 'TAEE11', 'OIBR4', 'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3'
+    # ]
 
     # LIMPA E EXPORTA INDICADORES EMPRESAS
     # exp_b.limpa_base_f()
-    exp_b.nomes = [x[:4] for x in tickers]
-    exp_b.dict_bp = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/bp.h5')
-    exp_b.dict_dfc = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/dfc.h5')
-    exp_b.dict_dre = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/dre.h5')
+    # exp_b.nomes = [x[:4] for x in tickers]
+    # exp_b.dict_bp = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/bp.h5')
+    # exp_b.dict_dfc = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/dfc.h5')
+    # exp_b.dict_dre = dict_x(exp_b.nomes, '../base_de_dados/fundamentos_limpo/dre.h5')
     # exp_b.nomes = list(exp_b.dict_bp.keys())
 
-    exp_b.indicadores(True)
+    # exp_b.indicadores(True)
 
     # # LIMPA E EXPORTA PRECOS ACOES
     # exp_b.dfs_prices()
-    # exp_b.limpa_base_p()
+    exp_b.limpa_base_p()
 
     # LIMPA E EXPORTA VALOR INDEX
     # exp_b.dfs_index()

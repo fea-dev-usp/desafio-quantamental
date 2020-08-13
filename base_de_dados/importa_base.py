@@ -2,7 +2,7 @@ import pandas as pd
 import datetime
 
 class importa_base():
-    def __init__(self, tickers, index, dt_ini, dt_fim, indicad_path='..\\base_de_dados\\fundamentos_limpo\\indicadores.h5', price_path='..\\base_de_dados\\precos_limpo\\precos.h5', index_path='..\\base_de_dados\\index_limpo\\index.h5'):
+    def __init__(self, dt_ini, dt_fim, tickers=None, index=None, indicad_path='..\\base_de_dados\\fundamentos_limpo\\indicadores.h5', price_path='..\\base_de_dados\\precos_limpo\\precos.h5', index_path='..\\base_de_dados\\index_limpo\\index.h5'):
         self.dt_ini = dt_ini
         self.dt_fim = dt_fim
         self.tickers = list(tickers)
@@ -15,7 +15,7 @@ class importa_base():
         self.price_path = price_path
 
     def fix_tickers(self):
-        return [x[:4] for x in self.tickers]
+        return list(set([x[:4] for x in self.tickers]))
 
     def dict_x(self, tickers, path):
         dict_x = {}
@@ -36,6 +36,7 @@ class importa_base():
 
         # LIMPA DFS
         for name in dict_prices.keys():
+            # print(name)
             # dict_limpa[name] = dict_prices[name]['preco'][self.dt_ini:self.dt_fim].to_frame().copy()
             x = dict_prices[name].loc[dict_prices[name].index <= self.dt_fim, 'preco'].to_frame().copy()
             dict_limpa[name] = x.loc[x.index >= self.dt_ini, 'preco'].to_frame().copy()
@@ -100,20 +101,25 @@ class importa_base():
         # LIST COM AS ACOES Q N POSSUEM PRECO NO PERIODO
         list_priceless = []
         # NAMES
-        names = dict_ind.keys()
+        names = list(dict_ind.keys())
 
         # LIMPA DFS
         for name in names:
+            # print(name)
+            # if name == 'SBSP':
+            #     print('paraa')
             x = dict_ind[name].loc[dict_ind[name].index >= self.dt_ini.date()].copy()
             dict_limpa[name] = x.loc[x.index <= self.dt_fim.date()].copy()
             # VERIFICA SE A ACAO EXISTE NESSE PERIODO
             if len(dict_limpa[name]) == 0:
                 list_priceless.append(name)
                 del dict_limpa[name]
+                # names.remove(name)
 
         # JUNTA DFS EM UMA UNICA
         df_ind = pd.concat(dict_limpa.values(), axis=1)
-
+        ## REMOVE TIKERS DE NAMES
+        [names.remove(x) for x in list_priceless]
         ## SUB INDEX
         sub_index = ['roa', 'fco', 'lc', 'alavancagem', 'shares', 'ga', 'margem_bruta']
         ## MULTIINDEX
@@ -132,13 +138,23 @@ class importa_base():
 
 def main():
     # TICKERS / INDEX
-    tickers = ['ABEV3', 'AZUL4', 'B3SA3']
+    ## TICKERS FALTANDO
+    # missing_tickers = ['BRFS3', 'EGIE3', 'CSAN3']
+    tickers = [
+        'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3', 'BBDC3', 'BBDC4', 'BBSE3', 'BEEF3', 'BPAC11', 'BRAP4', 'BRDT3',
+        'BRKM5', 'BRML3', 'BTOW3', 'CCRO3', 'CIEL3', 'CMIG4', 'COGN3', 'CPFE3', 'CRFB3', 'CSNA3', 'CVCB3',
+        'CYRE3', 'ECOR3', 'ELET3', 'ELET6', 'EMBR3', 'ENBR3', 'ENGI11', 'EQTL3', 'FLRY3', 'GGBR4', 'GNDI3',
+        'GOAU4', 'GOLL4', 'HAPV3', 'HGTX3', 'HYPE3', 'IGTA3', 'IRBR3', 'ITSA4', 'ITUB4', 'JBSS3', 'KLBN11', 'LAME4',
+        'LREN3', 'MGLU3', 'MRFG3', 'MRVE3', 'MULT3', 'NTCO3', 'PCAR3', 'PETR3', 'PETR4', 'QUAL3', 'RADL3', 'RAIL3',
+        'RENT3', 'SANB11', 'SBSP3', 'SULA11', 'SUZB3', 'TAEE11'
+    ]
+    # tickers = ['ABEV3', 'AZUL4', 'B3SA3']
     index = ['IBOV']
     # PERIODO
-    ini = datetime.datetime.strptime('10-02-2016', '%d-%m-%Y')
+    ini = datetime.datetime.strptime('01-02-2010', '%d-%m-%Y')
     fim = datetime.datetime.strptime('10-02-2017', '%d-%m-%Y')
     # CLASS IMPORT
-    imp_b = importa_base(tickers, index, ini, fim)
+    imp_b = importa_base(ini, fim, tickers, index)
     ## IMPORT PRECOS
     price = imp_b.importa_precos()
     ## IMPORT INDICES

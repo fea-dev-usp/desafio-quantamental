@@ -34,17 +34,18 @@ def backtest(df_ticker, df_ibov, lista_pct):
     carteira_ibov['saldo'] = carteira_ibov.sum(axis=1)
     carteira_ibov['retorno'] = carteira_ibov['saldo'].pct_change()
 
-    return pf.create_full_tear_sheet(carteira['retorno'], benchmark_rets=carteira_ibov['retorno'])
+    return carteira, carteira_ibov
+    # return pf.create_full_tear_sheet(carteira['retorno'], benchmark_rets=carteira_ibov['retorno'])
 
 if __name__ == '__main__':
     # ticker2016 = ['TIET11.SA','BTOW3.SA','BBAS3.SA']
-    ticker2016 = ['ABEV3.SA', 'B3SA3.SA']
-    dados_yahoo = web.get_data_yahoo(ticker2016, start='2016-01-01', end='2017-01-01')['Adj Close']
-
-    ibov2016 = ['^BVSP']
-    dados_ibov = web.get_data_yahoo(ibov2016, start='2016-01-01', end='2017-01-01')['Adj Close']
-
-    lista = [0.5, 0.5]
+    # ticker2016 = ['ABEV3.SA', 'B3SA3.SA']
+    # dados_yahoo = web.get_data_yahoo(ticker2016, start='2016-01-01', end='2017-01-01')['Adj Close']
+    #
+    # ibov2016 = ['^BVSP']
+    # dados_ibov = web.get_data_yahoo(ibov2016, start='2016-01-01', end='2017-01-01')['Adj Close']
+    #
+    # lista = [0.5, 0.5]
 
     # backtest(dados_yahoo, dados_ibov, lista)
 
@@ -56,7 +57,7 @@ if __name__ == '__main__':
     ini = datetime.datetime.strptime('10-02-2016', '%d-%m-%Y')
     fim = datetime.datetime.strptime('10-02-2017', '%d-%m-%Y')
     # CLASS IMPORT
-    imp_b = importa_base(shares_tickers, index_tickers, ini, fim)
+    imp_b = importa_base(ini, fim, shares_tickers, index_tickers)
     ## IMPORT PRECOS
     df_price = imp_b.importa_precos()
     ## IMPORT INDICES
@@ -68,4 +69,4 @@ if __name__ == '__main__':
     lista = [0.5, 0.5]
 
     # BACKTEST
-    # backtest(df_price, df_indexes, lista)
+    backtest(df_price, df_indexes, lista)
