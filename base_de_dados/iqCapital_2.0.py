@@ -243,7 +243,7 @@ class iq_capital_fundamentos():
             dfc.close()
             bp.close()
 
-            return list(dif_names)
+            return list([x for x in tickers if x[:4] in dif_names])
 
         # CHECK IN PRECOS
         elif 'Prices' == base:
@@ -437,12 +437,24 @@ def fundamentos():
     # ]
 
     tickers = ['OIBR4', 'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3']
+    certo = [
 
+    ]
+    tickers = [
+        'CPLE3', 'GGBR3', 'CIEL3', 'ELET3', 'MRVE3', 'SULA3', 'CESP3', 'ENBR3',
+        'OIBR3', 'ITUB3', 'ROMI3', 'BTOW3', 'CLSC3', 'SBSP3', 'ITSA3', 'VIVT4', 'SANB3', 'BRFS3', 'BBAS3',
+        'ECOR3','TIET3', 'EGIE3', 'UGPA3', 'VIVT3', 'SUZB3',
+    ]
+    tickers_2 = [
+        'TCSL4', 'ELPL3', 'JSLG3', 'CCRO3', 'KLBN3', 'WEGE3', 'CSMG3', 'BICB3', 'VALE3', 'CMIG3', 'GOAU3',
+        'LAME3', 'FLRY3', 'EMBR3', 'EVEN3', 'BBDC3', 'BRKM3', 'LREN3', 'COCE3', 'RDCD3', 'CPFE3'
+    ]
+    manual = ['AEDU3','LIGH3', 'FIBR3', 'NATU3', 'DURA3','TMAR3']
     demons = ['DRE', 'B', 'DFC']
 
     # DOWNLOAD FUNDAMENTOS
     # INICIA O WEBDRIVER
-    download_path_fundamentos = "/desafio-quantamental/base_de_dados\\fundamentos_sujos"
+    download_path_fundamentos = "C:\\Nícolas\\FEA.dev\\desafio-quantamental\\base_de_dados\\fundamentos_sujos"
     f_options = webdriver.ChromeOptions()
     # options.gpu = False
     # options.headless = True
@@ -453,7 +465,7 @@ def fundamentos():
 
     desired = f_options.to_capabilities()
     desired['loggingPrefs'] = {'performance': 'ALL'}
-    driver = webdriver.Chrome("\\chromedriver.exe", desired_capabilities=desired)
+    driver = webdriver.Chrome("..\\base_de_dados\\chromedriver.exe", desired_capabilities=desired)
 
     iq_f = iq_capital_fundamentos(username, password, driver, download_path_fundamentos)
     # DEMONSTRATIVOS
@@ -465,9 +477,18 @@ def shares():
     password = "apto213A"
     # TICKERS
     tickers = ['OIBR4', 'ABEV3', 'AZUL4', 'B3SA3', 'BBAS3']
+    tickers = [
+        'CPLE3', 'GGBR3', 'AEDU3', 'CIEL3', 'ELET3', 'MRVE3', 'SULA3', 'CESP3', 'LIGH3', 'ENBR3',
+        'FIBR3', 'NATU3', 'OIBR3', 'ITUB3', 'ROMI3', 'BTOW3', 'CLSC3', 'SBSP3', 'ITSA3', 'VIVT4',
+        'SANB3','BRFS3','BBAS3','ECOR3','DURA3','TMAR3','TIET3','EGIE3','UGPA3','VIVT3','SUZB3',
+    ]
+    tickers_2 = [
+        'TCSL4', 'ELPL3', 'JSLG3', 'CCRO3', 'KLBN3', 'WEGE3', 'CSMG3', 'BICB3', 'VALE3', 'CMIG3', 'GOAU3',
+        'LAME3', 'FLRY3', 'EMBR3', 'EVEN3', 'BBDC3', 'BRKM3', 'LREN3', 'COCE3', 'RDCD3', 'CPFE3'
+    ]
 
     # INICIA O WEBDRIVER
-    download_path_precos = "/desafio-quantamental/base_de_dados\\precos_sujos"
+    download_path_precos = "..\\desafio-quantamental\\base_de_dados\\precos_sujos"
     f_options = webdriver.ChromeOptions()
     # options.gpu = False
     # options.headless = True
@@ -491,7 +512,7 @@ def index():
     index = ['IBOV']
 
     # INICIA O WEBDRIVER
-    download_path_precos = "/desafio-quantamental/base_de_dados\\index_sujos"
+    download_path_precos = "..\\desafio-quantamental\\base_de_dados\\index_sujos"
     f_options = webdriver.ChromeOptions()
     # options.gpu = False
     # options.headless = True
@@ -508,7 +529,7 @@ def index():
     iq_i.index_value(index)
 
 if __name__ == '__main__':
-    # fundamentos()
+    fundamentos()
     # shares()
-    index()
+    # index()
 

@@ -6,7 +6,7 @@ import pandas as pd
 import datetime
 from dateutil.relativedelta import relativedelta
 import pyfolio as pf
-import markowitz
+# import markowitz
 
 class EVA:
     def __init__(self, series_tickers, first_period, index=['IBOV']):
@@ -64,7 +64,7 @@ class EVA:
             imp_b.tickers = tickers_p
             df_precos_mtz = imp_b.importa_precos()
             mtz = markowitz(df_precos_mtz)
-            pct = mtz.max_sharpe().values()
+            pct = list(mtz.max_sharpe().values())
             # pct = list(np.random.rand(len(df_precos_p.columns)))
 
             carteira, carteira_ibov = backtest(df_precos_p, df_ibov, pct)
@@ -127,4 +127,37 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+
+    p_2011 = ['TIET3', 'AEDU3', 'BICB3', 'BBDC3', 'BBAS3', 'BRKM3', 'BRFS3', 'CMIG3', 'CESP3', 'COCE3', 'CSMG3', 'CPLE3',
+            'CPFE3', 'DURA3', 'ELET3', 'ELPL3', 'EMBR3', 'ENBR3', 'EVEN3', 'FIBR3', 'GGBR3', 'GOAU3', 'ROMI3', 'ITSA3',
+            'ITUB3', 'LIGH3', 'NATU3', 'RDCD3', 'SBSP3', 'SANB3', 'SULA3', 'SUZB3', 'TMAR3', 'TCSL4', 'EGIE3', 'UGPA3',
+            'VALE3', 'VIVT4']
+    p_2012 = ['TIET3', 'AEDU3', 'BICB3', 'BBDC3', 'BBAS3', 'BRKM3', 'BRFS3', 'CCRO3', 'CMIG3', 'CESP3', 'COCE3', 'CSMG3',
+            'CPLE3', 'CPFE3', 'DURA3', 'ECOR3', 'ELET3', 'ELPL3', 'EMBR3', 'ENBR3', 'EVEN3', 'FIBR3', 'GGBR3', 'GOAU3',
+            'ITSA3', 'ITUB3', 'LIGH3', 'NATU3', 'RDCD3', 'SBSP3', 'SANB3', 'SULA3', 'SUZB3', 'TMAR3', 'TCSL4', 'EGIE3',
+            'UGPA3', 'VALE3']
+    p_2013 = ['TIET3', 'BICB3', 'BBDC3', 'BBAS3', 'BRKM3', 'BRFS3', 'CCRO3', 'CMIG3', 'CESP3', 'COCE3', 'CSMG3', 'CPLE3',
+            'CPFE3', 'DURA3', 'ECOR3', 'ELET3', 'ENBR3', 'ELPL3', 'EVEN3', 'FIBR3', 'GGBR3', 'GOAU3', 'ITSA3', 'ITUB3',
+            'LIGH3', 'NATU3', 'OIBR3', 'SBSP3', 'SANB3', 'SULA3', 'SUZB3', 'VIVT3', 'TCSL4', 'EGIE3', 'UGPA3', 'VALE3',
+            'WEGE3']
+    p_2014 = ['TIET3', 'BICB3', 'BBDC3', 'BBAS3', 'BRKM3', 'BRFS3', 'CCRO3', 'CMIG3', 'CESP3', 'COCE3', 'CSMG3', 'CPLE3',
+            'CPFE3', 'DURA3', 'ECOR3', 'ELET3', 'ENBR3', 'ELPL3', 'EMBR3', 'EVEN3', 'FIBR3', 'FLRY3', 'GGBR3', 'ITSA3',
+            'ITUB3', 'KLBN3', 'LIGH3', 'GOAU3', 'NATU3', 'OIBR3', 'SBSP3', 'SANB3', 'SULA3', 'SUZB3', 'VIVT3', 'TCSL4',
+            'EGIE3', 'VALE3', 'WEGE3']
+    p_2015 = ['TIET3', 'BTOW3', 'BICB3', 'BBDC3', 'BBAS3', 'BRKM3', 'BRFS3', 'CCRO3', 'CMIG3', 'CIEL3', 'COCE3', 'CPLE3',
+            'CPFE3', 'DURA3', 'ECOR3', 'ELET3', 'ENBR3', 'ELPL3', 'EMBR3', 'EVEN3', 'FIBR3', 'FLRY3', 'GGBR3', 'ITSA3',
+            'ITUB3', 'JSLG3', 'KLBN3', 'LIGH3', 'GOAU3', 'LAME3', 'LREN3', 'NATU3', 'SBSP3', 'SANB3', 'SULA3', 'SUZB3',
+            'VIVT3', 'TCSL4', 'EGIE3', 'VALE3', 'WEGE3']
+    p_2016 = ['TIET3', 'BTOW3', 'BBDC3', 'BBAS3', 'BRKM3', 'BRFS3', 'CCRO3', 'CMIG3', 'CESP3', 'CIEL3', 'CPLE3', 'CPFE3',
+            'DURA3', 'ECOR3', 'ELET3', 'ENBR3', 'ELPL3', 'EMBR3', 'EVEN3', 'FIBR3', 'FLRY3', 'ITSA3', 'ITUB3', 'KLBN3',
+            'LIGH3', 'LAME3', 'LREN3', 'NATU3', 'OIBR3', 'SANB3', 'SULA3', 'SUZB3', 'VIVT3', 'TCSL4', 'EGIE3', 'WEGE3']
+    p_2017 = ['TIET3', 'BTOW3', 'BBDC3', 'BBAS3', 'BRKM3', 'BRFS3', 'CCRO3', 'CLSC3', 'CMIG3', 'CIEL3', 'CPLE3', 'CPFE3',
+            'DURA3', 'ECOR3', 'ELET3', 'ENBR3', 'ELPL3', 'EMBR3', 'EGIE3', 'FIBR3', 'FLRY3', 'ITSA3', 'ITUB3', 'KLBN3',
+            'LIGH3', 'LAME3', 'LREN3', 'MRVE3', 'NATU3', 'SANB3', 'SULA3', 'VIVT3', 'TCSL4', 'WEGE3']
+    p_2018 = ['TIET3', 'BTOW3', 'BBDC3', 'BBAS3', 'BRKM3', 'CCRO3', 'CLSC3', 'CMIG3', 'CIEL3', 'CPLE3', 'CPFE3', 'DURA3',
+            'ECOR3', 'ELET3', 'ENBR3', 'ELPL3', 'EGIE3', 'FIBR3', 'FLRY3', 'ITSA3', 'ITUB3', 'KLBN3', 'LIGH3', 'LAME3',
+            'LREN3', 'MRVE3', 'NATU3', 'SANB3', 'VIVT3', 'TCSL4', 'WEGE3']
+    p_2019 = ['TIET3', 'BTOW3', 'BBDC3', 'BBAS3', 'BRKM3', 'CCRO3', 'CMIG3', 'CIEL3', 'CPLE3', 'DURA3', 'ECOR3', 'ELET3',
+            'ENBR3', 'EGIE3', 'FLRY3', 'ITSA3', 'ITUB3', 'KLBN3', 'LIGH3', 'LAME3', 'LREN3', 'MRVE3', 'NATU3', 'SANB3',
+            'VIVT3', 'TCSL4', 'WEGE3']
