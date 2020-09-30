@@ -7,7 +7,7 @@ Created on Mon Jun 22 14:25:20 2020
 
 # import fundamentos as ftos
 import pandas as pd
-from importa_base import importa_base
+from base_de_dados.importa_base import importa_base
 import datetime
 import numpy as np
 

@@ -11,7 +11,7 @@ import pyfolio as pf
 import warnings
 import numpy as np
 import datetime
-from importa_base import importa_base
+from base_de_dados.importa_base import importa_base
 
 def backtest(df_ticker, df_ibov, lista_pct):
 

@@ -1,0 +1,6 @@
+{
+    "python.pythonPath": "/home/diego/anaconda3/envs/desafio-quantamental/bin/python",
+    "python.autoComplete.extraPaths": [
+        "/home/diego/Documentos/fea-dev/quant/desafio-quantamental/base_de_dados/"
+    ]
+}
